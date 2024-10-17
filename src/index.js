@@ -4,4 +4,8 @@ import Project from "./project.js";
 
 import projects from "./test.js";
 
-console.log(projects);
+import * as Display from './display.js';
+
+Display.displayProjects(projects);
+
+Display.displayTasks(projects[0]);

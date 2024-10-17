@@ -30,7 +30,7 @@ Object.defineProperty(Task.prototype, "date", {
 });
 
 Task.prototype.prettyDate = function () {
-    return new Date(this._date);
+    return new Date(this._date).toLocaleDateString();
 }
 
 export default Task;
