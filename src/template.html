@@ -21,6 +21,22 @@
         </ul>
         <div class="projects">Projects</div>
         <button id="addProjectBtn">Add Project</button>
+        <dialog id="addProjectDialog">
+            <form action="">
+                <div>
+                    <h2>New project:</h2>
+
+                    <div class="inputs">
+                        <label for="title"><b>title: </b></label>
+                        <input type="text" name="title" required>
+                    </div>
+                </div>
+                <div>
+                    <button value="false" formmethod="dialog">Cancel</button>
+                    <button id="confirmBtn" value="true">Confirm</button>
+                </div>
+            </form>
+        </dialog>
     </div>
     <div id="main-content">
         <h3>Tasks</h3>
