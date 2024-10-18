@@ -45,3 +45,24 @@ button.project-delete {
   padding: 0;
   margin: 0;
 }
+
+
+
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    height: auto;
+  }
+
+  to {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.5s forwards;
+}
