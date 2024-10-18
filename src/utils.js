@@ -6,6 +6,7 @@ export function getAllTasks(projects) {
         tempProject.tasks.push(...project.tasks)
     });
     return tempProject;
+    console.table(tempProject.tasks);
 }
 
 export function removeProject(projectToDelete, projects) {
@@ -15,10 +16,10 @@ export function removeProject(projectToDelete, projects) {
     }
 }
 
-export function addProject(name, projects) {
-    const newProject = new Project(name);
-    projects.push(newProject);
-}
+// export function addProject(name, projects) {
+//     const newProject = new Project(name);
+//     projects.push(newProject);
+// }
 
 // export function addProject(projects) {
 //     const newProjectDialog = document.getElementById('addProjectDialog');

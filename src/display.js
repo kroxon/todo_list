@@ -4,6 +4,7 @@ import Task from './task.js';
 export function displayProjects(projects, onDeleteProject) {
     console.log(projects);
     const projectsList = document.querySelector(".projects");
+    projectsList.innerHTML = "";
     projects.forEach(project => {
         const projectElement = document.createElement("div");
         projectElement.classList.add("project-element");
