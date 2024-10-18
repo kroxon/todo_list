@@ -6,6 +6,12 @@ import projects from "./test.js";
 
 import * as Display from './display.js';
 
+import { getAllTasks } from './utils.js';
+
 Display.displayProjects(projects);
 
-Display.displayTasks(projects[0]);
+const projects2 = projects;
+
+let selectedProject = projects[0];
+
+Display.displayTasks(getAllTasks(projects))

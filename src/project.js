@@ -8,7 +8,20 @@ function Project(name) {
 Project.prototype.addTask = function (title, description, date, priority) {
     const task = new Task(title, description, date, priority)
     this.tasks.push(task);
+    this.sortByDateTasks();
+}
+
+Project.prototype.sortByDateTasks = function () {
     this.tasks.sort((a, b) => a.date - b.date);
+}
+
+Project.prototype.sortByPriorityTasks = function () {
+    const priorityMap = {
+        "high": 1,
+        "medium": 2,
+        "low": 3
+    };
+    this.tasks.sort((a, b) => priorityMap[a.priority] - priorityMap[b.priority]);
 }
 
 Project.prototype.removeTask = function (taskToRemove) {

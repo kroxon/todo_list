@@ -2,10 +2,46 @@ body {
   height: 100vh;
   margin: 0;
   display: grid;
-  grid-template-columns: 1fr 5fr;
+  grid-template-columns: 1.5fr 5fr;
   grid-template-rows: auto 1fr;
 }
 
 header {
   grid-area: 1 / 1 / 2 / 3;
+  font-size: 2rem;
+  padding: 10px;
+}
+
+li {
+  list-style: none;
+  padding: 2px 0;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+#main-content {
+  padding-left: 40px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+}
+
+.project-element {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px;
+}
+
+.material-icons {
+  font-size: 20px;
+  color: rgb(216, 64, 64);
+}
+
+button.project-delete {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
 }

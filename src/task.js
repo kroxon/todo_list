@@ -1,8 +1,9 @@
-function Task(title, description, date, priority = "low") {
+function Task(title, description, date, priority = "low", note = "") {
     this.title = title;
     this.description = description;
     this._date = new Date(date).getTime();
     this.priority = priority;
+    this.note = note;
     this.completed = false;
 }
 
