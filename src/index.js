@@ -18,7 +18,6 @@ const sortByPriorityBtn = document.getElementById('sortByPriorityBtn');
 const sortByDateBtn = document.getElementById('sortByDateBtn');
 
 
-
 Display.initial(projects, removeProject, selectedProject)
 
 
