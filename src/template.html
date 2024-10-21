@@ -31,7 +31,7 @@
                         <input type="text" name="title" required>
                     </div>
                 </div>
-                <div>
+                <div class="dialogButtons">
                     <button value="false" formmethod="dialog">Cancel</button>
                     <button id="confirmBtn" value="true">Confirm</button>
                 </div>
@@ -39,9 +39,12 @@
         </dialog>
     </div>
     <div id="main-content">
-        <h3>Tasks</h3>
+        <h1 id="actualProject"></h1>
+        <div id="tasksTop">
+            <p>Tasks</p>
+            <button id="addTaskBtn">+</button>
+        </div>
         <div class="tasks-buttons">
-            <button id="addTaskBtn">Add Task</button>
             <button id="sortByPriorityBtn">Sort by priority</button>
             <button id="sortByDateBtn">Sort by date</button>
         </div>

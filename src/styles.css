@@ -25,7 +25,54 @@ ul {
   padding-left: 40px;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
+}
+
+div.tasks-buttons {
+  margin-bottom: 15px;
+}
+
+#main-content button {
+  border: 0;
+  border-radius: .5rem;
+  color: #111827;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  padding: 5px 10px;
+}
+
+#tasksTop {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  border-bottom: 1mm ridge rgba(50, 220, 58, 0.6);
+  margin: 0 10px 15px 0;
+}
+
+#tasksTop * {
+  margin: 0;
+  align-self: center;
+  margin-bottom: 5px;
+  font-size: 1.3rem;
+}
+
+
+#tasksTop #addTaskBtn {
+  background-color: #4dc549;
+  font-size: 2rem;
+  padding: 10px;
+  height: fit-content;
+}
+
+#addProjectBtn {
+  background-color: #4dc549;
+  padding: 5px 10px;
+  margin: 10px auto;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.3rem;
+  display: block;
 }
 
 .project-element {
@@ -38,16 +85,93 @@ ul {
   font-size: 20px;
   color: rgb(216, 64, 64);
 }
+button.task_priority.low .material-icons {
+  color: rgb(94, 216, 64);
+}
 
-button.project-delete {
+button.task_priority.medium .material-icons {
+  color: rgb(199, 230, 27);
+}
+
+button.task_priority.high .material-icons {
+  color: rgb(230, 68, 27);
+}
+
+button.project-delete,
+button.task_priority {
   background: none;
   border: none;
   padding: 0;
   margin: 0;
 }
 
+#addProjectDialog {
+  border: 0;
+  border-radius: 5px;
+}
 
+#addProjectDialog input {
+  background-color: #dadada;
+  border: 0;
+  outline: none;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1.3rem
+}
 
+#addProjectDialog .inputs {
+  font-size: 1.3rem
+}
+
+#addProjectDialog h2,
+#addProjectDialog .inputs {
+  margin: 5px 5px 15px 5px;
+}
+
+#addProjectDialog button {
+  border: none;
+  background-color: #D98555;
+  color: #ffff;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  width: 100px;
+  border-radius: 10px;
+  margin: 10px;
+  position: relative;
+  box-shadow: 5px 5px 5px #BF463B;
+  transition: all 0.3s ease;
+}
+
+#actualProject {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333333;
+  background: #FFFFFF;
+  text-shadow: 2px 2px 0px #FFFFFF, 5px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.dialogButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.task-element {
+  display: flex;
+  flex-direction: row;
+  background-color: #f0efef;
+  margin: 5px 10px 0 0;
+  font-size: 1.3rem;
+}
+
+.task-element * {
+  padding: 5px 10px;
+  text-align: left
+}
+
+.task-element div.title {
+  flex-grow: 1;
+}
 
 @keyframes fadeOut {
   from {
