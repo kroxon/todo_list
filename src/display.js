@@ -1,7 +1,7 @@
 import Project from './project.js';
 import Task from './task.js';
 
-export function displayProjects(projects, onDeleteProject) {
+export function displayProjects(projects, onDeleteProject, setSelectedProject) {
     console.log(projects);
     const projectsList = document.querySelector(".projects");
     projectsList.innerHTML = "";
@@ -20,7 +20,7 @@ export function displayProjects(projects, onDeleteProject) {
             setTimeout(() => {
                 onDeleteProject(project, projects);
                 projectsList.innerHTML = "";
-                displayProjects(projects, onDeleteProject);
+                displayProjects(projects, onDeleteProject, setSelectedProject);
             }, 500);
 
         });
@@ -30,7 +30,7 @@ export function displayProjects(projects, onDeleteProject) {
         // display tasks for selected project
         projectElement.addEventListener('click', () => {
             displayTasks(project);
-            document.getElementById('actualProject').textContent = project.name;
+            setSelectedProject(project);
         }
         )
         projectsList.appendChild(projectElement);
@@ -80,8 +80,8 @@ export function displayTasks(project) {
     });
 }
 
-export function initial(projects, onDeleteProject, project) {
-    displayProjects(projects, onDeleteProject);
+export function initial(projects, onDeleteProject, project, setSelectedProject) {
+    displayProjects(projects, onDeleteProject, setSelectedProject);
     displayTasks(project);
     document.getElementById('actualProject').textContent = project.name;
 }

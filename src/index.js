@@ -6,6 +6,11 @@ import { getAllTasks, removeProject, addProject } from './utils.js';
 
 
 let selectedProject = projects[0];
+function setSelectedProject(project) {
+    selectedProject = project;
+    console.log("Updated selected project:", selectedProject); 
+    document.getElementById('actualProject').textContent = project.name;
+}
 
 const newProjectDialog = document.getElementById('addProjectDialog');
 const confirmBtn = document.getElementById('confirmBtn');
@@ -20,7 +25,7 @@ const sortByPriorityBtn = document.getElementById('sortByPriorityBtn');
 const sortByDateBtn = document.getElementById('sortByDateBtn');
 
 
-Display.initial(projects, removeProject, selectedProject)
+Display.initial(projects, removeProject, selectedProject, setSelectedProject)
 
 document.getElementById('addProjectBtn').addEventListener('click', function () {
     newProjectDialog.showModal();
@@ -36,7 +41,7 @@ confirmBtn.addEventListener('click', function (event) {
     projects.push(newProject);
     newProjectDialog.close();
     formAddProject.reset();
-    Display.displayProjects(projects, removeProject);
+    Display.displayProjects(projects, removeProject, setSelectedProject);
 });
 
 cancelBtn.addEventListener('click', (event) => {
@@ -67,3 +72,4 @@ sortByDateBtn.addEventListener('click', () => {
     selectedProject.sortByDateTasks();
     Display.displayTasks(selectedProject);
 });
+
