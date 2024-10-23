@@ -8,7 +8,7 @@ import { getAllTasks, removeProject, addProject } from './utils.js';
 let selectedProject = projects[0];
 function setSelectedProject(project) {
     selectedProject = project;
-    console.log("Updated selected project:", selectedProject); 
+    console.log("Updated selected project:", selectedProject);
     document.getElementById('actualProject').textContent = project.name;
 }
 
@@ -50,9 +50,9 @@ cancelBtn.addEventListener('click', (event) => {
 });
 
 allTasksBtn.addEventListener("click", () => {
-    selectedProject = getAllTasks(projects);
+    setSelectedProject(getAllTasks(projects));
     actualProject.textContent = "All projects";
-    Display.displayTasks(selectedProject);
+    Display.displayTasks(selectedProject, projects);
 });
 
 todayTasksBtn.addEventListener('click', () => {
@@ -65,11 +65,11 @@ upcomingTasksBtn.addEventListener('click', () => {
 
 sortByPriorityBtn.addEventListener('click', () => {
     selectedProject.sortByPriorityTasks();
-    Display.displayTasks(selectedProject);
+    Display.displayTasks(selectedProject, projects);
 });
 
 sortByDateBtn.addEventListener('click', () => {
     selectedProject.sortByDateTasks();
-    Display.displayTasks(selectedProject);
+    Display.displayTasks(selectedProject, projects);
 });
 

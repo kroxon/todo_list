@@ -29,7 +29,7 @@ export function displayProjects(projects, onDeleteProject, setSelectedProject) {
 
         // display tasks for selected project
         projectElement.addEventListener('click', () => {
-            displayTasks(project);
+            displayTasks(project, projects);
             setSelectedProject(project);
         }
         )
@@ -37,10 +37,10 @@ export function displayProjects(projects, onDeleteProject, setSelectedProject) {
     });
 }
 
-export function displayTasks(project) {
-    console.log(project);
+export function displayTasks(project, allProjects) {
     const tasksList = document.querySelector(".tasks");
     tasksList.innerHTML = "";
+
     project.tasks.forEach(task => {
         // need to be prettier 
         const taskElement = document.createElement("div");
@@ -52,6 +52,18 @@ export function displayTasks(project) {
         const taskName = document.createElement("div");
         taskName.classList.add('title');
         taskName.textContent = task.title;
+
+        const taskProjectName = document.createElement('div');
+        taskProjectName.classList.add('projectName');
+        taskProjectName.textContent = "proj.name";
+
+        console.log("allProjects");
+        console.log(allProjects);
+
+        allProjects.forEach(proj => {
+            if (proj.tasks.includes(task))
+                taskProjectName.textContent = proj.name;
+        });
 
         const taskDate = document.createElement('div');
         taskDate.classList.add('date');
@@ -74,6 +86,7 @@ export function displayTasks(project) {
 
         taskElement.appendChild(taskCheck);
         taskElement.appendChild(taskName);
+        taskElement.appendChild(taskProjectName);
         taskElement.appendChild(taskDate);
         taskElement.appendChild(taskPriority);
         tasksList.appendChild(taskElement);
@@ -82,7 +95,7 @@ export function displayTasks(project) {
 
 export function initial(projects, onDeleteProject, project, setSelectedProject) {
     displayProjects(projects, onDeleteProject, setSelectedProject);
-    displayTasks(project);
+    displayTasks(project, projects);
     document.getElementById('actualProject').textContent = project.name;
 }
 
