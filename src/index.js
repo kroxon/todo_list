@@ -2,7 +2,7 @@ import './styles.css';
 import Project from "./project.js";
 import projects from "./test.js";
 import * as Display from './display.js';
-import { getAllTasks, removeProject, addProject } from './utils.js';
+import { getAllTasks, removeProject, addProject, addTask } from './utils.js';
 
 
 let selectedProject = projects[0];
@@ -73,3 +73,7 @@ sortByDateBtn.addEventListener('click', () => {
     Display.displayTasks(selectedProject, projects);
 });
 
+addTaskBtn.addEventListener("click", () => {
+    Display.addEditTaskDialog(projects, addTask, selectedProject)
+    Display.displayTasks(selectedProject, projects);
+})

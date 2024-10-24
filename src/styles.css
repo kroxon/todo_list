@@ -85,6 +85,7 @@ div.tasks-buttons {
   font-size: 20px;
   color: rgb(216, 64, 64);
 }
+
 button.task_priority.low .material-icons {
   color: rgb(94, 216, 64);
 }
@@ -171,6 +172,26 @@ button.task_priority {
 
 .task-element div.title {
   flex-grow: 1;
+}
+
+.add-task-dialog {
+  padding: 30px;
+  width: 50%;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 5px 5px 35px #5f5f5f;
+}
+
+.add-task-dialog form {
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  height: 5rem;
+  resize: none;
+  padding: 5px;
+
 }
 
 @keyframes fadeOut {

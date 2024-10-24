@@ -1,5 +1,8 @@
 import Project from './project.js';
 import Task from './task.js';
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+
 
 export function displayProjects(projects, onDeleteProject, setSelectedProject) {
     console.log(projects);
@@ -99,3 +102,122 @@ export function initial(projects, onDeleteProject, project, setSelectedProject) 
     document.getElementById('actualProject').textContent = project.name;
 }
 
+export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, editTask = null) {
+    const dialog = document.createElement('dialog');
+    dialog.classList.add('add-task-dialog');
+
+    const form = document.createElement('form');
+    form.action = "";
+
+    const titleLabel = document.createElement('label');
+    titleLabel.textContent = 'Task Title:';
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.name = 'title';
+    titleInput.required = true;
+
+    const descriptionLabel = document.createElement('label');
+    descriptionLabel.textContent = 'Task description:';
+    const descriptionInput = document.createElement('textarea');
+    descriptionInput.name = "description";
+
+    const projectLabel = document.createElement('label');
+    projectLabel.textContent = 'Project:';
+    const selectProject = document.createElement('select');
+    if (selectedProject.name !== "temp") {
+        const selectedProjectOption = document.createElement('option');
+        selectedProjectOption.value = selectedProject.name;
+        selectedProjectOption.innerHTML = selectedProject.name;
+        selectProject.appendChild(selectedProjectOption);
+    }
+    allProjects.forEach(project => {
+        if (project !== selectedProject) {
+            const opt = document.createElement('option');
+            opt.value = project.name;
+            opt.innerHTML = project.name;
+            selectProject.appendChild(opt);
+        }
+    });
+
+    const dateContainer = document.createElement('div');
+    const dateLabel = document.createElement('label');
+    dateLabel.textContent = "Select date";
+    const dateInput = document.createElement('input');
+    dateInput.required = true;
+    dateInput.type = "date";
+    dateContainer.appendChild(dateLabel);
+    dateContainer.appendChild(dateInput);
+
+    const priorityLabel = document.createElement('label');
+    priorityLabel.textContent = 'Priority:';
+    const selectPriority = document.createElement('select');
+    ["low", "medium", "high"].forEach(
+        element => {
+            const opt = document.createElement('option');
+            opt.value = element;
+            opt.innerHTML = element;
+            selectPriority.appendChild(opt);
+        }
+    )
+
+    const cancelTaskBtn = document.createElement('button');
+    cancelTaskBtn.textContent = "Cancel";
+    cancelTaskBtn.value = "false";
+    cancelTaskBtn.formmethod = "dialog";
+
+    const saveTaskBtn = document.createElement('button');
+    saveTaskBtn.textContent = "Save";
+    saveTaskBtn.id = "saveTaskBtn";
+    saveTaskBtn.value = "true";
+
+    form.appendChild(cancelTaskBtn);
+    form.appendChild(titleLabel);
+    form.appendChild(titleInput);
+    form.appendChild(descriptionLabel);
+    form.appendChild(descriptionInput);
+    form.appendChild(projectLabel);
+    form.appendChild(selectProject);
+    form.appendChild(dateContainer);
+    form.appendChild(priorityLabel);
+    form.appendChild(selectPriority);
+    form.appendChild(saveTaskBtn);
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (form.checkValidity()) {
+            // const name = dialogForm.elements['title'].value;
+            // const author = dialogForm.elements['author'].value;
+            // const pages = dialogForm.elements['pages'].value;
+            // const read = readCheck.checked;
+            // console.log(name + " " + author + " " + pages + " " + read);
+            // addBookToLibrary(name, author, pages, read);
+
+            const tTitle = titleInput.value;
+            const tDescription = descriptionInput.value;
+            const tProject = allProjects.find(pr => {
+                return selectProject.options[selectProject.selectedIndex].text === pr.name;
+            });
+            const tDate = dateInput.value;
+            const tPriority = selectPriority.options[selectPriority.selectedIndex].text;
+
+            const newTask = new Task(tTitle, tDescription, tDate, tPriority);
+            onTaskAdded(tProject, allProjects, newTask);
+            console.log(newTask);
+            dialog.close();
+            form.reset();
+            // showBooks();
+        }
+    });
+
+    dialog.appendChild(form);
+
+    document.body.appendChild(dialog);
+
+
+    dialog.showModal();
+
+
+    onTaskAdded(allProjects[2], allProjects, new Task("new", "desc", "12.12.2020", "low"))
+
+}

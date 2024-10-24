@@ -14,3 +14,8 @@ export function removeProject(projectToDelete, projects) {
         projects.splice(index, 1);
     }
 }
+
+export function addTask(project, projects, task) {
+    const index = projects.indexOf(project);
+    projects[index].tasks.push(task);
+}
