@@ -75,5 +75,4 @@ sortByDateBtn.addEventListener('click', () => {
 
 addTaskBtn.addEventListener("click", () => {
     Display.addEditTaskDialog(projects, addTask, selectedProject)
-    Display.displayTasks(selectedProject, projects);
 })

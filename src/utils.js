@@ -5,6 +5,7 @@ export function getAllTasks(projects) {
     projects.forEach(project => {
         tempProject.tasks.push(...project.tasks)
     });
+    tempProject.sortByDateTasks();
     return tempProject;
 }
 

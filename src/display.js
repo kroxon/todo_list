@@ -45,7 +45,6 @@ export function displayTasks(project, allProjects) {
     tasksList.innerHTML = "";
 
     project.tasks.forEach(task => {
-        // need to be prettier 
         const taskElement = document.createElement("div");
         taskElement.classList.add('task-element');
 
@@ -58,10 +57,6 @@ export function displayTasks(project, allProjects) {
 
         const taskProjectName = document.createElement('div');
         taskProjectName.classList.add('projectName');
-        taskProjectName.textContent = "proj.name";
-
-        console.log("allProjects");
-        console.log(allProjects);
 
         allProjects.forEach(proj => {
             if (proj.tasks.includes(task))
@@ -203,9 +198,15 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
 
             const newTask = new Task(tTitle, tDescription, tDate, tPriority);
             onTaskAdded(tProject, allProjects, newTask);
-            console.log(newTask);
             dialog.close();
             form.reset();
+            console.log("allProjects - 1");
+            console.log(allProjects);
+            console.log("selectedProject:");
+            console.log(selectedProject);
+            displayTasks(selectedProject, allProjects);
+            console.log("allProjects - 2");
+            console.log(allProjects);
             // showBooks();
         }
     });
@@ -216,8 +217,5 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
 
 
     dialog.showModal();
-
-
-    onTaskAdded(allProjects[2], allProjects, new Task("new", "desc", "12.12.2020", "low"))
 
 }
