@@ -2,6 +2,7 @@ import Project from './project.js';
 import Task from './task.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { getAllTasks } from './utils.js';
 
 
 export function displayProjects(projects, onDeleteProject, setSelectedProject) {
@@ -181,13 +182,6 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
         event.preventDefault();
 
         if (form.checkValidity()) {
-            // const name = dialogForm.elements['title'].value;
-            // const author = dialogForm.elements['author'].value;
-            // const pages = dialogForm.elements['pages'].value;
-            // const read = readCheck.checked;
-            // console.log(name + " " + author + " " + pages + " " + read);
-            // addBookToLibrary(name, author, pages, read);
-
             const tTitle = titleInput.value;
             const tDescription = descriptionInput.value;
             const tProject = allProjects.find(pr => {
@@ -200,14 +194,10 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
             onTaskAdded(tProject, allProjects, newTask);
             dialog.close();
             form.reset();
-            console.log("allProjects - 1");
-            console.log(allProjects);
-            console.log("selectedProject:");
-            console.log(selectedProject);
+            if (selectedProject.name = "temp")
+                selectedProject = getAllTasks(allProjects);
             displayTasks(selectedProject, allProjects);
-            console.log("allProjects - 2");
-            console.log(allProjects);
-            // showBooks();
+
         }
     });
 
@@ -217,5 +207,7 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
 
 
     dialog.showModal();
+
+    return
 
 }
