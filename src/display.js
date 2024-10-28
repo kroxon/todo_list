@@ -194,8 +194,11 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
             onTaskAdded(tProject, allProjects, newTask);
             dialog.close();
             form.reset();
-            if (selectedProject.name = "temp")
+            if (selectedProject.name === "temp")
                 selectedProject = getAllTasks(allProjects);
+            console.log("selectedProject");
+            console.log(selectedProject);
+            selectedProject.sortByDateTasks();
             displayTasks(selectedProject, allProjects);
 
         }
