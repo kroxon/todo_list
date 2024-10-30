@@ -2,10 +2,10 @@ import Project from './project.js';
 import Task from './task.js';
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
-import { getAllTasks } from './utils.js';
+import { getAllTasks, getAllTodayTasks, getAllUpcomingTasks } from './utils.js';
 
 
-export function displayProjects(projects, onDeleteProject, setSelectedProject) {
+export function displayProjects(projects, onDeleteProject, setSelectedProject, addProject) {
     console.log(projects);
     const projectsList = document.querySelector(".projects");
     projectsList.innerHTML = "";
@@ -24,15 +24,20 @@ export function displayProjects(projects, onDeleteProject, setSelectedProject) {
             setTimeout(() => {
                 onDeleteProject(project, projects);
                 projectsList.innerHTML = "";
-                displayProjects(projects, onDeleteProject, setSelectedProject);
+                displayProjects(projects, onDeleteProject, setSelectedProject, addProject);
+                if (!projects.length) {
+                    const defaultProject = new Project("Default Project");
+                    addProject(defaultProject);
+                    displayTasks(defaultProject, projects)
+                }
             }, 500);
-
         });
         projectElement.appendChild(projectName);
         projectElement.appendChild(projectDelete);
 
         // display tasks for selected project
         projectElement.addEventListener('click', () => {
+            project.sortByDateTasks();
             displayTasks(project, projects);
             setSelectedProject(project);
         }
@@ -52,6 +57,7 @@ export function displayTasks(project, allProjects) {
         const taskCheck = document.createElement("input");
         taskCheck.type = "checkbox";
 
+
         const taskName = document.createElement("div");
         taskName.classList.add('title');
         taskName.textContent = task.title;
@@ -59,9 +65,19 @@ export function displayTasks(project, allProjects) {
         const taskProjectName = document.createElement('div');
         taskProjectName.classList.add('projectName');
 
+        let projTask = new Project;
         allProjects.forEach(proj => {
             if (proj.tasks.includes(task))
-                taskProjectName.textContent = proj.name;
+                projTask = proj;
+        });
+        taskProjectName.textContent = projTask.name;
+
+        taskCheck.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (confirm(`Complete the task ${task.title}?`)) {
+                projTask.removeTask(task);
+                displayTasks(project, allProjects);
+            }
         });
 
         const taskDate = document.createElement('div');
@@ -83,6 +99,10 @@ export function displayTasks(project, allProjects) {
         }
         taskPriority.innerHTML = `<span class="material-icons">radio_button_checked </span>`;
 
+        taskElement.addEventListener('click', () => {
+            addEditTaskDialog(allProjects, null, project, task);
+        });
+
         taskElement.appendChild(taskCheck);
         taskElement.appendChild(taskName);
         taskElement.appendChild(taskProjectName);
@@ -92,18 +112,30 @@ export function displayTasks(project, allProjects) {
     });
 }
 
-export function initial(projects, onDeleteProject, project, setSelectedProject) {
-    displayProjects(projects, onDeleteProject, setSelectedProject);
+export function initial(projects, onDeleteProject, project, setSelectedProject, addProject) {
+    displayProjects(projects, onDeleteProject, setSelectedProject, addProject);
     displayTasks(project, projects);
     document.getElementById('actualProject').textContent = project.name;
 }
 
-export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, editTask = null) {
-    const dialog = document.createElement('dialog');
+export function addEditTaskDialog(allProjects, onTaskAdded = null, selectedProject, editTask = null) {
+    let dialog = document.querySelector('.add-task-dialog');
+    if (!dialog) {
+        dialog = document.createElement('dialog');
+        dialog.classList.add('add-task-dialog');
+        document.body.appendChild(dialog);
+
+        dialog.addEventListener('close', () => {
+            dialog.remove();
+        });
+    } else {
+        dialog.innerHTML = '';
+    }
     dialog.classList.add('add-task-dialog');
 
     const form = document.createElement('form');
     form.action = "";
+    form.reset();
 
     const titleLabel = document.createElement('label');
     titleLabel.textContent = 'Task Title:';
@@ -120,19 +152,18 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
     const projectLabel = document.createElement('label');
     projectLabel.textContent = 'Project:';
     const selectProject = document.createElement('select');
-    if (selectedProject.name !== "temp") {
+    selectProject.id = "selectedProjOpt";
+    if (selectedProject && selectedProject.name !== "temp" && selectedProject.name !== "tempActual" && selectedProject.name !== "tempUpcoming" && editTask === null) {
         const selectedProjectOption = document.createElement('option');
         selectedProjectOption.value = selectedProject.name;
         selectedProjectOption.innerHTML = selectedProject.name;
         selectProject.appendChild(selectedProjectOption);
     }
     allProjects.forEach(project => {
-        if (project !== selectedProject) {
-            const opt = document.createElement('option');
-            opt.value = project.name;
-            opt.innerHTML = project.name;
-            selectProject.appendChild(opt);
-        }
+        const opt = document.createElement('option');
+        opt.value = project.name;
+        opt.innerHTML = project.name;
+        selectProject.appendChild(opt);
     });
 
     const dateContainer = document.createElement('div');
@@ -147,6 +178,7 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
     const priorityLabel = document.createElement('label');
     priorityLabel.textContent = 'Priority:';
     const selectPriority = document.createElement('select');
+    selectPriority.id = "selectPriority";
     ["low", "medium", "high"].forEach(
         element => {
             const opt = document.createElement('option');
@@ -156,15 +188,20 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
         }
     )
 
+    const completeChBx = document.createElement('input');
+    completeChBx.type = "checkbox";
+
     const cancelTaskBtn = document.createElement('button');
     cancelTaskBtn.textContent = "Cancel";
     cancelTaskBtn.value = "false";
     cancelTaskBtn.formmethod = "dialog";
 
+    const saveContainer = document.createElement('div');
     const saveTaskBtn = document.createElement('button');
-    saveTaskBtn.textContent = "Save";
+    saveTaskBtn.textContent = "Add task";
     saveTaskBtn.id = "saveTaskBtn";
     saveTaskBtn.value = "true";
+    saveContainer.appendChild(saveTaskBtn);
 
     form.appendChild(cancelTaskBtn);
     form.appendChild(titleLabel);
@@ -176,7 +213,60 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
     form.appendChild(dateContainer);
     form.appendChild(priorityLabel);
     form.appendChild(selectPriority);
-    form.appendChild(saveTaskBtn);
+
+    dialog.appendChild(form);
+
+    if (editTask !== null) {
+        titleInput.value = editTask.title;
+        descriptionInput.value = editTask.description;
+        const editTaskProject = allProjects.find(project =>
+            project.tasks.some(task => task.id === editTask.id)
+        );
+
+        selectElement("selectedProjOpt", editTaskProject.name)
+        dateInput.value = formatDateToInputValue(editTask.date);
+        selectElement("selectPriority", editTask.priority);
+        completeChBx.value = editTask.completed;
+        form.appendChild(completeChBx);
+        completeChBx.addEventListener('click', () => {
+            if (confirm(`Complete the task ${editTask.title}?`)) {
+                editTaskProject.removeTask(editTask);
+                dialog.close();
+                if (selectedProject.name === "temp")
+                    selectedProject = getAllTasks(allProjects);
+                if (selectedProject.name === "tempActual")
+                    selectedProject = getAllTodayTasks(allProjects);
+                if (selectedProject.name === "tempUpcoming")
+                    selectedProject = getAllUpcomingTasks(allProjects);
+                selectedProject.sortByDateTasks();
+                displayTasks(selectedProject, allProjects);
+            }
+        });
+
+        saveTaskBtn.textContent = "Save changes";
+        const deleteTaskBtn = document.createElement('button');
+        deleteTaskBtn.textContent = "Delete";
+        deleteTaskBtn.id = "deleteTaskBtn";
+        saveContainer.appendChild(deleteTaskBtn);
+
+        deleteTaskBtn.addEventListener('click', () => {
+            if (confirm(`Remove task ${editTask.title}?`)) {
+                editTaskProject.removeTask(editTask);
+                dialog.close();
+                if (selectedProject.name === "temp")
+                    selectedProject = getAllTasks(allProjects);
+                if (selectedProject.name === "tempActual")
+                    selectedProject = getAllTodayTasks(allProjects);
+                if (selectedProject.name === "tempUpcoming")
+                    selectedProject = getAllUpcomingTasks(allProjects);
+                selectedProject.sortByDateTasks();
+                displayTasks(selectedProject, allProjects);
+            }
+        });
+    }
+
+    form.appendChild(saveContainer);
+
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -191,19 +281,48 @@ export function addEditTaskDialog(allProjects, onTaskAdded, selectedProject, edi
             const tPriority = selectPriority.options[selectPriority.selectedIndex].text;
 
             const newTask = new Task(tTitle, tDescription, tDate, tPriority);
-            onTaskAdded(tProject, allProjects, newTask);
+
+            if (!editTask) {
+                onTaskAdded(tProject, allProjects, newTask);
+            } else {
+                console.log(`editet project ${tProject.name}, edited task ${editTask.title}`)
+                tProject.editTask(editTask.id, newTask);
+            }
             dialog.close();
-            form.reset();
-            if (selectedProject.name = "temp")
+            if (selectedProject.name === "temp")
                 selectedProject = getAllTasks(allProjects);
+            if (selectedProject.name === "tempActual")
+                selectedProject = getAllTodayTasks(allProjects);
+            if (selectedProject.name === "tempUpcoming")
+                selectedProject = getAllUpcomingTasks(allProjects);
+            selectedProject.sortByDateTasks();
             displayTasks(selectedProject, allProjects);
 
         }
     });
 
-    dialog.appendChild(form);
+    function selectElement(id, valueToSelect) {
+        const element = document.getElementById(id);
+        if (element) {
+            const optionExists = Array.from(element.options).some(option => option.value === valueToSelect);
+            if (optionExists) {
+                element.value = valueToSelect;
+                console.log(`Change ${element} value to ${valueToSelect}`)
+            } else {
+                console.log(`Option ${valueToSelect} doesn't exist in ${id}`);
+            }
+        } else
+            console.log("doesn't exist!")
+    }
 
-    document.body.appendChild(dialog);
+    function formatDateToInputValue(timestamp) {
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
 
 
     dialog.showModal();

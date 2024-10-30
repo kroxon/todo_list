@@ -1,4 +1,5 @@
 function Task(title, description, date, priority = "low", note = "") {
+    this.id = Math.random().toString(36).substr(2, 9);
     this.title = title;
     this.description = description;
     this._date = new Date(date).getTime();
@@ -7,7 +8,7 @@ function Task(title, description, date, priority = "low", note = "") {
 }
 
 Task.prototype.markAsCompleted = function () {
-    this.completed = true;
+    this.completed = !this.completed;
 };
 
 Task.prototype.changePriority = function (newPriority) {
