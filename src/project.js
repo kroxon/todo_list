@@ -39,4 +39,15 @@ Project.prototype.changePriority = function (newPriority, taskToChange) {
     taskToChange.changePriority(newPriority);
 }
 
+Project.prototype.editTask = function (taskId, updatedData) {
+    const task = this.tasks.find(task => task.id === taskId);
+    if (task) {
+        task.title = updatedData.title || task.title;
+        task.description = updatedData.description || task.description;
+        task.date = updatedData.date || task.date;
+        task.priority = updatedData.priority || task.priority;
+        task.completed = updatedData.completed || task.completed;
+    }
+};
+
 export default Project;
