@@ -78,6 +78,7 @@ export function displayTasks(project, allProjects) {
             event.stopPropagation();
             if (confirm(`Complete the task ${task.title}?`)) {
                 projTask.removeTask(task);
+                saveProjectsToLocalStorage();
                 displayTasks(project, allProjects);
             }
         });
