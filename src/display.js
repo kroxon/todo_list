@@ -1,5 +1,6 @@
 import Project from './project.js';
 import Task from './task.js';
+import { saveProjectsToLocalStorage } from "./index.js"
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import { getAllTasks, getAllTodayTasks, getAllUpcomingTasks } from './utils.js';
@@ -24,6 +25,7 @@ export function displayProjects(projects, onDeleteProject, setSelectedProject, a
             setTimeout(() => {
                 onDeleteProject(project, projects);
                 projectsList.innerHTML = "";
+                saveProjectsToLocalStorage();
                 displayProjects(projects, onDeleteProject, setSelectedProject, addProject);
                 if (!projects.length) {
                     const defaultProject = new Project("Default Project");
@@ -240,6 +242,7 @@ export function addEditTaskDialog(allProjects, onTaskAdded = null, selectedProje
                     selectedProject = getAllUpcomingTasks(allProjects);
                 selectedProject.sortByDateTasks();
                 displayTasks(selectedProject, allProjects);
+                saveProjectsToLocalStorage();
             }
         });
 
@@ -261,6 +264,7 @@ export function addEditTaskDialog(allProjects, onTaskAdded = null, selectedProje
                     selectedProject = getAllUpcomingTasks(allProjects);
                 selectedProject.sortByDateTasks();
                 displayTasks(selectedProject, allProjects);
+                saveProjectsToLocalStorage();
             }
         });
     }
@@ -284,8 +288,9 @@ export function addEditTaskDialog(allProjects, onTaskAdded = null, selectedProje
 
             if (!editTask) {
                 onTaskAdded(tProject, allProjects, newTask);
+                saveProjectsToLocalStorage();
             } else {
-                console.log(`editet project ${tProject.name}, edited task ${editTask.title}`)
+                console.log(`edited project ${tProject.name}, edited task ${editTask.title}`)
                 tProject.editTask(editTask.id, newTask);
             }
             dialog.close();
@@ -297,7 +302,7 @@ export function addEditTaskDialog(allProjects, onTaskAdded = null, selectedProje
                 selectedProject = getAllUpcomingTasks(allProjects);
             selectedProject.sortByDateTasks();
             displayTasks(selectedProject, allProjects);
-
+            saveProjectsToLocalStorage();
         }
     });
 

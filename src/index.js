@@ -1,11 +1,36 @@
 import './styles.css';
 import Project from "./project.js";
-import projects from "./test.js";
+import Task from "./task.js";
 import * as Display from './display.js';
 import { getAllTasks, removeProject, addProject, addTask, getAllTodayTasks, getAllUpcomingTasks } from './utils.js';
 
 
-let selectedProject = projects[0];
+let selectedProject;
+
+export function saveProjectsToLocalStorage() {
+    localStorage.setItem("projects", JSON.stringify(projects));
+}
+
+import defaultProjects from './test.js';
+function loadProjectsFromLocalStorage() {
+    const savedProjects = localStorage.getItem("projects");
+    if (savedProjects) {
+        return JSON.parse(savedProjects).map(projectData => {
+            const project = new Project(projectData.name);
+            project.tasks = projectData.tasks.map(taskData => {
+                return Object.assign(new Task(taskData.title, taskData.dueDate, taskData.priority, taskData.completed), taskData);
+            });
+            return project;
+        });
+    } else {
+        return [...defaultProjects];
+    }
+}
+
+let projects = loadProjectsFromLocalStorage();
+
+selectedProject = projects[0];
+
 function setSelectedProject(project) {
     selectedProject = project;
     document.getElementById('actualProject').textContent = project.name;
@@ -14,6 +39,7 @@ function setSelectedProject(project) {
 function addDefaultProject(newProject) {
     setSelectedProject(newProject);
     projects.push(newProject);
+    saveProjectsToLocalStorage();
     Display.displayProjects(projects, removeProject, setSelectedProject, addDefaultProject);
 }
 
@@ -30,7 +56,7 @@ const sortByPriorityBtn = document.getElementById('sortByPriorityBtn');
 const sortByDateBtn = document.getElementById('sortByDateBtn');
 
 
-Display.initial(projects, removeProject, selectedProject, setSelectedProject, addDefaultProject)
+Display.initial(projects, removeProject, selectedProject, setSelectedProject, addDefaultProject, saveProjectsToLocalStorage)
 
 document.getElementById('addProjectBtn').addEventListener('click', function () {
     newProjectDialog.showModal();
@@ -44,6 +70,7 @@ confirmBtn.addEventListener('click', function (event) {
     const title = formAddProject.querySelector('input[name="title"]').value.trim();
     const newProject = new Project(title);
     projects.push(newProject);
+    saveProjectsToLocalStorage();
     newProjectDialog.close();
     formAddProject.reset();
     Display.displayProjects(projects, removeProject, setSelectedProject, addDefaultProject);
@@ -51,7 +78,7 @@ confirmBtn.addEventListener('click', function (event) {
 
 cancelBtn.addEventListener('click', (event) => {
     formAddProject.reset();
-    addProjectDialog.close();
+    newProjectDialog.close();
 });
 
 allTasksBtn.addEventListener("click", () => {
@@ -75,13 +102,17 @@ upcomingTasksBtn.addEventListener('click', () => {
 sortByPriorityBtn.addEventListener('click', () => {
     selectedProject.sortByPriorityTasks();
     Display.displayTasks(selectedProject, projects);
+    saveProjectsToLocalStorage();
 });
 
 sortByDateBtn.addEventListener('click', () => {
     selectedProject.sortByDateTasks();
     Display.displayTasks(selectedProject, projects);
+    saveProjectsToLocalStorage();
 });
 
 addTaskBtn.addEventListener("click", () => {
     Display.addEditTaskDialog(projects, addTask, selectedProject)
+    saveProjectsToLocalStorage();
 })
+
